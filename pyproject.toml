@@ -1,0 +1,28 @@
+[project]
+name = "MLRL_Net"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "libmr>=0.1.9",
+    "mat73>=0.65",
+    "matplotlib>=3.10.8",
+    "numpy<2",
+    "scikit-learn>=1.7.2",
+    "seaborn>=0.13.2",
+    "torch==1.12.1",
+    "torchaudio==0.12.1",
+    "torchvision==0.13.1",
+    "tqdm>=4.67.2",
+]
+[[tool.uv.index]]
+name = "pytorch-cu113"
+url = "https://download.pytorch.org/whl/cu113"
+explicit = true
+[tool.uv.sources]
+torch = { index = "pytorch-cu113" }
+torchvision = { index = "pytorch-cu113" }
+torchaudio = { index = "pytorch-cu113" }
+[tool.uv.extra-build-dependencies]
+libmr = ["numpy", "Cython"]
