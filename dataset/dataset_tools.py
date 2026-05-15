@@ -2,7 +2,7 @@ import numpy as np
 from torch.utils.data import Dataset
 import torch
 from torch.utils.data import TensorDataset,DataLoader
-import dataset.data_utilities as du
+import data_utilities as du
 
 """
 数据处理辅助函数参数设置
@@ -68,4 +68,5 @@ if __name__ == "__main__":
         num += 1
         # print(sigs.shape)
         # print(labels)
-        print(num)
+        print(sigs.shape)
+        break
