@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 from tqdm import tqdm
-from model.EAGCN_Net import EAGCN_Net
+from model.MLRL_Net import Closed_Train
 from dataset.dataset_tools import Load_Data_OSR
 from components.metric import AccuracyMetric
 from components.utilsall import save_checkpoint
@@ -15,7 +15,7 @@ from datetime import datetime
 
 
 # 超参数配置
-MODEL_NAME = "EAGCN_Net"
+MODEL_NAME = "Closed_Train"
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 TRAIN_BATCH_SIZE = 32
@@ -83,8 +83,8 @@ def main():
     train_loader,valid_loader,_ = Load_Data_OSR(dataset_name,dataset_path,batch_size=TRAIN_BATCH_SIZE,num_known=label_known,num_unknown=label_unknown)
 
     #配置
-    lr_normal = 0.01
-    model = EAGCN_Net(in_features=1,num_nodes=256,num_classes=9).to(DEVICE)
+    lr_normal = 0.001
+    model = Closed_Train(in_channles=2,mid_channels=16,d_model=128,seq_len=256,out_channels=128,hidden_features=64,num_classes=9).to(DEVICE)
     model.apply(init_weights)
     loss_CE = nn.CrossEntropyLoss()
     optimizer_normal = optim.Adam(model.parameters(),lr_normal)

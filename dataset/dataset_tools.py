@@ -2,7 +2,7 @@ import numpy as np
 from torch.utils.data import Dataset
 import torch
 from torch.utils.data import TensorDataset,DataLoader
-import data_utilities as du
+import dataset.data_utilities as du
 
 """
 数据处理辅助函数参数设置
@@ -64,7 +64,7 @@ if __name__ == "__main__":
     dataset_path = './dataset/'
     train_loader,valid_loader,test_loader = Load_Data_OSR(dataset_name,dataset_path,batch_size=32)
     num = 0
-    for sigs,labels in valid_loader:
+    for sigs,labels in train_loader:
         num += 1
         # print(sigs.shape)
         # print(labels)

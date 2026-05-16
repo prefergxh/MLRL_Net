@@ -334,7 +334,7 @@ class ClosedSetClassifier(nn.Module):
         self.block2 = nn.Linear(hidden_features, num_classes)
         
 
-    def forward(self, x, return_probs=False):
+    def forward(self, x):
         """
         前向传播
         参数:
@@ -347,6 +347,18 @@ class ClosedSetClassifier(nn.Module):
         # 第二层：输出类别打分 (Logits)
         logits = self.block2(x)
 
+        return logits
+    
+class  Closed_Train(nn.Module):
+    def __init__(self,in_channles,mid_channels,d_model,seq_len,out_channels,hidden_features,num_classes):
+        super().__init__()
+        self.encoder = Encoder(in_channles,mid_channels,d_model,seq_len,out_channels)
+        self.classfier = ClosedSetClassifier(out_channels,hidden_features,num_classes)
+
+    def forward(self,x):
+        x = x.transpose(1,2)
+        features = self.encoder(x)
+        logits = self.classfier(features)
         return logits
     
 
@@ -497,39 +509,39 @@ class Decoder(nn.Module):
 # 使用示例 (针对 IQ 信号特征提取的场景)
 # ==========================================
 if __name__ == "__main__":
-    # # 假设输入是一个批次的 IQ 信号，Batch=32, Channels=2 (I和Q两路), Seq_Len=1024
-    # batch_size = 32
-    # channels = 2
-    # seq_len = 256
-    
-    # # 生成模拟输入数据
-    # mock_iq_signal = torch.randn(batch_size, channels, seq_len)
-    
-    # # 实例化 GTA 模块
-    # # 注意：由于输入通道只有2，我们可以设置 reduction_ratio=1 保持隐藏层维度
-    # gta_block = Encoder(2,16,128,256,64)
-    
-    # # 前向计算
-    # out = gta_block(mock_iq_signal)
-    
-    # print(f"输出信号形状: {out.shape}")
-
-
     # 假设输入是一个批次的 IQ 信号，Batch=32, Channels=2 (I和Q两路), Seq_Len=1024
     batch_size = 32
-    channels = 1
-    features = 128
+    channels = 2
+    seq_len = 256
     
     # 生成模拟输入数据
-    mock_iq_signal = torch.randn(batch_size, channels)
-    mock_iq_signal1 = torch.randn(batch_size, features)
+    mock_iq_signal = torch.randn(batch_size, channels, seq_len)
     
     # 实例化 GTA 模块
     # 注意：由于输入通道只有2，我们可以设置 reduction_ratio=1 保持隐藏层维度
-    gta_block = FiLMLayer_1D(features,channels)
+    gta_block = Closed_Train(in_channles=2,mid_channels=16,d_model=128,seq_len=256,out_channels=128,hidden_features=64,num_classes=9)
     
     # 前向计算
-    out = gta_block(mock_iq_signal1,mock_iq_signal)
+    out = gta_block(mock_iq_signal)
     
     print(f"输出信号形状: {out.shape}")
+
+
+    # # 假设输入是一个批次的 IQ 信号，Batch=32, Channels=2 (I和Q两路), Seq_Len=1024
+    # batch_size = 32
+    # channels = 1
+    # features = 128
+    
+    # # 生成模拟输入数据
+    # mock_iq_signal = torch.randn(batch_size, channels)
+    # mock_iq_signal1 = torch.randn(batch_size, features)
+    
+    # # 实例化 GTA 模块
+    # # 注意：由于输入通道只有2，我们可以设置 reduction_ratio=1 保持隐藏层维度
+    # gta_block = FiLMLayer_1D(features,channels)
+    
+    # # 前向计算
+    # out = gta_block(mock_iq_signal1,mock_iq_signal)
+    
+    # print(f"输出信号形状: {out.shape}")
     
